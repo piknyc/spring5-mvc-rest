@@ -4,7 +4,7 @@ import guru.springfamework.api.v1.mapper.CategoryMapper;
 import guru.springfamework.api.v1.model.CategoryDTO;
 import guru.springfamework.domain.Category;
 import guru.springfamework.repositories.CategoryRepository;
-import guru.springfamework.repositories.CategoryServiceImpl;
+import guru.springfamework.service.CategoryServiceImpl;
 import guru.springfamework.service.CategoryService;
 import org.junit.Before;
 import org.junit.Test;
