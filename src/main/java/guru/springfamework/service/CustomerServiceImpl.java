@@ -25,7 +25,11 @@ public class CustomerServiceImpl implements CustomerService {
 	public List<CustomerDTO> findAllCustomers() {
 		return customerRepository.findAll()
 				  .stream()
-				  .map(customerMapper::customerToCustomerDTO)
+				  .map(customer -> {
+					  CustomerDTO customerDTO = customerMapper.customerToCustomerDTO(customer);
+					  customerDTO.setCustomerUrl("/api/v1/customers/" + customer.getId());
+					  return customerDTO;
+				  })
 				  .collect(Collectors.toList());
 	}
 
@@ -39,5 +43,46 @@ public class CustomerServiceImpl implements CustomerService {
 		else {
 			throw new NotFoundException();
 		}
+	}
+
+	@Override
+	public CustomerDTO getCustomerById(Long id) {
+
+		return customerRepository.findById(id)
+				  .map(customer -> {
+					  CustomerDTO customerDTO = customerMapper.customerToCustomerDTO(customer);
+					  customerDTO.setCustomerUrl("/api/v1/customers/" + customer.getId());
+					  return customerDTO;
+				  })
+				  .orElseThrow(RuntimeException::new); //todo implement better exception handling
+	}
+
+	@Override
+	public CustomerDTO createNewCustomer(CustomerDTO customerDTO) {
+
+		Customer customer = customerMapper.customerDtoToCustomer(customerDTO);
+
+		Customer savedCustomer = customerRepository.save(customer);
+
+		CustomerDTO returnDto = customerMapper.customerToCustomerDTO(savedCustomer);
+
+		returnDto.setCustomerUrl("/api/v1/customer/" + savedCustomer.getId());
+
+		return returnDto;
+	}
+
+	@Override
+	public CustomerDTO saveCustomerByDTO(Long id, CustomerDTO customerDTO) {
+		Customer customer = customerMapper.customerDtoToCustomer(customerDTO);
+		customer.setId(id);
+
+		Customer savedCustomer = customerRepository.save(customer);
+
+		CustomerDTO returnDto = customerMapper.customerToCustomerDTO(savedCustomer);
+
+		returnDto.setCustomerUrl("/api/v1/customer/" + savedCustomer.getId());
+
+		return returnDto;
+
 	}
 }
