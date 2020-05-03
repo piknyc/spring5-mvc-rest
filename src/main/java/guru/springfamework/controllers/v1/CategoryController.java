@@ -4,17 +4,18 @@ import guru.springfamework.api.v1.model.CategoryDTO;
 import guru.springfamework.api.v1.model.CategoryListDTO;
 import guru.springfamework.api.v1.model.NotFoundException;
 import guru.springfamework.service.CategoryService;
+import guru.springfamework.service.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.server.ResponseStatusException;
 
 @Controller
-@RequestMapping("/api/v1/categories/")
+@RequestMapping(CategoryController.BASE_URL)
 public class CategoryController {
+	public static final String BASE_URL = "/api/v1/categories";
 
 	private final CategoryService categoryService;
 
@@ -23,7 +24,7 @@ public class CategoryController {
 	}
 
 	@GetMapping
-	public ResponseEntity<CategoryListDTO> getallCatetories(){
+	public ResponseEntity<CategoryListDTO> getallCatetories() {
 
 		return new ResponseEntity<CategoryListDTO>(
 				  new CategoryListDTO(categoryService.getAllCategories()), HttpStatus.OK);
@@ -36,7 +37,7 @@ public class CategoryController {
 					  categoryService.getCategoryByName(name), HttpStatus.OK
 			);
 		} catch (NotFoundException e) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+			throw new ResourceNotFoundException("Not found");
 		}
 
 	}
